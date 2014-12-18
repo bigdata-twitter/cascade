@@ -29,7 +29,11 @@ for line in f1:
 			fw.write(unicode(data['tweets'][0]['user']['listed_count'])+'\t');
 			fw.write(unicode(data['tweets'][0]['user']['statuses_count'])+'\t');
 			fw.write(unicode(data['tweets'][0]['user']['created_at'])+'\t');
-			fw.write(unicode(data['tweets'][0]['user']['lang']));
+			fw.write(unicode(data['tweets'][0]['user']['lang'])+'\t');
+			if (data['tweets'][0]['user']['time_zone']!=None):
+				fw.write(unicode(data['tweets'][0]['user']['time_zone']));
+			else:
+				fw.write(unicode('ntz'));
 			fw.write(unicode('\n'));
 	
 			for i in range(0,len(data['tweets'])):
