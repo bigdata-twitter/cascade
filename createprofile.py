@@ -16,6 +16,8 @@ for line in f1:
 	frt=io.open("/mnt/filer01/round2/twitter/"+folder+"/mnt/retweet-data_"+folder+".txt","w",encoding='utf8')
 	frp=io.open("/mnt/filer01/round2/twitter/"+folder+"/mnt/reply-data_"+folder+".txt","w",encoding='utf8')
 	fresp=io.open("/mnt/filer01/round2/twitter/"+folder+"/mnt/rt-rep-data"+folder+".txt","w",encoding='utf8')
+	hash=0;
+	tot_tweets=0;
 	for line in f:
 		try:
 			data = json.loads(line);
@@ -34,6 +36,9 @@ for line in f1:
 				#print("Tweet "+str(i+1)+" done")
 				tweet_text = unicode(data['tweets'][i]['text']).replace("\n","\\n")
 				fuid.write(unicode(data['tweets'][i]["id_str"])+'\t'+unicode(data['tweets'][i]['user']['id_str'])+'\t'+tweet_text+'\t'+unicode(data["tweets"][i]["created_at"])+'\t'+unicode(data["tweets"][i]["favorite_count"]));
+				tot_tweets=tot_tweets+1;
+				if (len(data['tweets'][i]["entities"]["hashtags"]) != 0):
+					hash = hash+1;
 				for j in range(0,len(data['tweets'][i]["entities"]["hashtags"])):
 					fuid.write('\t'+unicode(data['tweets'][i]["entities"]["hashtags"][j]["text"]))
 				fuid.write(unicode('\n'))
@@ -59,10 +64,11 @@ for line in f1:
 
 		except:
 			continue;
-fw.close()
-fuid.close()
-fment.close()
-frt.close()
-frp.close()
-f.close()
-fresp.close()
+	fw.close()
+	fuid.close()
+	fment.close()
+	frt.close()
+	frp.close()
+	f.close()
+	fresp.close()
+print("Hashtagged="+hash+'\nTotal='+tot_tweets)
