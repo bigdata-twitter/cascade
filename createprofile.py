@@ -37,6 +37,11 @@ for line in f1:
 				tweet_text = unicode(data['tweets'][i]['text']).replace("\n","\\n")
 				fuid.write(unicode(data['tweets'][i]["id_str"])+'\t'+unicode(data['tweets'][i]['user']['id_str'])+'\t'+tweet_text+'\t'+unicode(data["tweets"][i]["created_at"])+'\t'+unicode(data["tweets"][i]["favorite_count"]));
 				tot_tweets=tot_tweets+1;
+				if data["tweets"][i]["coordinates"]!=None:
+					fuid.write('\t'+unicode(data['tweets'][i]["coordinates"]["coordinates"][0]))
+					fuid.write('\t'+unicode(data['tweets'][i]["coordinates"]["coordinates"][1]))
+				else:
+					fuid.write('\t'+unicode('nc')+'\t'+unicode('nc'))
 				if (len(data['tweets'][i]["entities"]["hashtags"]) != 0):
 					hash = hash+1;
 				for j in range(0,len(data['tweets'][i]["entities"]["hashtags"])):
