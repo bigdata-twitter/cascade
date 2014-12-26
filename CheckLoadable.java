@@ -22,5 +22,6 @@ public class CheckLoadable {
 			System.out.println("Done " + f);
 		}
 		br1.close();
+		System.out.println("Done all");
 	}
 }

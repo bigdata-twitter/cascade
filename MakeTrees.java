@@ -49,5 +49,6 @@ public class MakeTrees {
 			System.out.println("Done " + f);
 		}
 		br1.close();
+		System.out.println("Done all");
 	}
 }
