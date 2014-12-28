@@ -43,12 +43,39 @@ public class MakeTrees {
 				h.add(Long.parseLong(s[0]));
 				Node child = new Node(Long.parseLong(s[0]));
 				parent.children.add(child);
+				child.parent = parent;
 				done.add(child);
 			}
 			br.close();
-			System.out.println("Done " + f);
+			System.err.println("Done making tree from file " + f);
 		}
 		br1.close();
-		System.out.println("Done all");
+		System.err.println("Done making trees from all");
+		ListIterator<Node> iter = done.listIterator();
+		int count = 0;
+		while (iter.hasNext()) {
+			Node cur = iter.next();
+			if (cur.parent == null) {
+				count++;
+				printTree(cur);
+				System.out.println();
+			}
+		}
+		System.err.println("Total cascades = " + count);
+	}
+
+	private static void printTree(Node cur) {
+		System.out.print("{\"id\":" + cur.id + ", \"children\":[");
+		if (!cur.children.isEmpty()) {
+			for (int i = 0; i < cur.children.size(); i++) {
+				if (i == 0)
+					printTree(cur.children.getFirst());
+				else {
+					System.out.print(",");
+					printTree(cur.children.get(i));
+				}
+			}
+		}
+		System.out.print("]}");
 	}
 }
