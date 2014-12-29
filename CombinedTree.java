@@ -51,6 +51,7 @@ public class CombinedTree {
 					break;
 				default:
 					System.err.println("Error!!");
+					System.exit(1);
 					break;
 				}
 				CombinedNode parent = null;
