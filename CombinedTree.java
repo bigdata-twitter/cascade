@@ -3,7 +3,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.ListIterator;
 
 class CombinedNode {
 	LinkedList<CombinedNode> children;
@@ -11,30 +10,78 @@ class CombinedNode {
 	long id;
 	boolean reply;
 
-	CombinedNode(long id) {
-		this.id = id;
+	CombinedNode(String par) {
+		this.id = Long.parseLong(par);
 		this.children = new LinkedList<CombinedNode>();
 		this.reply = false;
 	}
 }
 
+class TrieNode {
+	TrieNode[] children;
+	CombinedNode c;
+
+	TrieNode() {
+		children = new TrieNode[10];
+		c = null;
+	}
+}
+
+class Trie {
+	TrieNode root;
+
+	Trie() {
+		root = new TrieNode();
+	}
+
+	boolean contains(String s) {
+		TrieNode cur = root;
+		for (int i = 0; i < s.length(); i++) {
+			if (cur.children[s.charAt(i) - 48] == null)
+				return false;
+			else
+				cur = cur.children[s.charAt(i) - 48];
+		}
+		return true;
+	}
+
+	CombinedNode getNode(String s, TrieNode n) {
+		if (s.length() == 0)
+			return n.c;
+		else
+			return getNode(new String(s.substring(1)),
+					n.children[s.charAt(0) - 48]);
+	}
+
+	void add(String s, CombinedNode n) {
+		TrieNode cur = root;
+		for (int i = 0; i < s.length(); i++) {
+			if (cur.children[s.charAt(i) - 48] == null)
+				cur.children[s.charAt(i) - 48] = new TrieNode();
+			cur = cur.children[s.charAt(i) - 48];
+		}
+		cur.c = n;
+	}
+}
+
 public class CombinedTree {
+	static HashSet<Long> dataset = new HashSet<Long>();
+	static int count;
+
 	public static void main(String args[]) throws IOException {
 		BufferedReader br1 = new BufferedReader(new FileReader("files"));
 		String f;
-		HashSet<Long> h = new HashSet<Long>();
-		LinkedList<CombinedNode> done = new LinkedList<CombinedNode>();
-		HashSet<Long> dataset = new HashSet<Long>();
+		Trie t = new Trie();
 		while ((f = br1.readLine()) != null) {
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			String in;
 			out: while ((in = br.readLine()) != null) {
 				String s[] = in.split("\t");
 				int c = 0;
-				long par = 0;
-				long chi = Long.parseLong(s[0]);
+				String par = null;
+				String chi = s[0];
 				CombinedNode child = null;
-				dataset.add(chi);
+				dataset.add(Long.parseLong(chi));
 				for (int i = 0; i < s.length; i++)
 					if (!s[i].isEmpty() && Character.isDigit(s[i].charAt(0)))
 						c++;
@@ -44,10 +91,10 @@ public class CombinedTree {
 				case 2:
 					child = new CombinedNode(chi);
 					if (s[1].equals("nr")) {
-						par = Long.parseLong(s[5]);
+						par = s[5];
 						child.reply = true;
 					} else
-						par = Long.parseLong(s[2]);
+						par = s[2];
 					break;
 				default:
 					System.err.println("Error!!");
@@ -55,43 +102,37 @@ public class CombinedTree {
 					break;
 				}
 				CombinedNode parent = null;
-				if (h.contains(par)) {
-					ListIterator<CombinedNode> iter = done.listIterator();
-					while (iter.hasNext()) {
-						parent = iter.next();
-						if (parent.id == par)
-							break;
-					}
-				} else {
+				if (t.contains(par))
+					parent = t.getNode(par, t.root);
+				else {
 					parent = new CombinedNode(par);
-					h.add(par);
-					done.add(parent);
+					t.add(par, parent);
 				}
-				h.add(chi);
 
 				parent.children.add(child);
 				child.parent = parent;
-				done.add(child);
+				t.add(chi, child);
 			}
 			br.close();
 			System.err.println("Done making tree from file " + f);
 		}
 		br1.close();
 		System.err.println("Done making trees from all");
-		ListIterator<CombinedNode> iter = done.listIterator();
-		int count = 0;
-		while (iter.hasNext()) {
-			CombinedNode cur = iter.next();
-			if (cur.parent == null) {
-				count++;
-				if (dataset.contains(cur.id))
-					printTree(cur, true);
-				else
-					printTree(cur, false);
-				System.out.println();
-			}
-		}
+		count = 0;
+		printAllTrees(t.root);
 		System.err.println("Total cascades = " + count);
+	}
+
+	private static void printAllTrees(TrieNode n) {
+		if (n.c == null)
+			return;
+		if (n.c.parent == null) {
+			printTree(n.c, dataset.contains(n.c.id));
+			System.out.println();
+			count++;
+		}
+		for (int i = 0; i < 10; i++)
+			printAllTrees(n.children[i]);
 	}
 
 	private static void printTree(CombinedNode cur, boolean contained) {
