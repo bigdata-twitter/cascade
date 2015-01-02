@@ -89,7 +89,8 @@ public class CombinedTree {
 				case 1:
 					continue out;
 				case 2:
-					child = new CombinedNode(chi);
+					child = t.contains(chi) ? t.getNode(chi, t.root)
+							: new CombinedNode(chi);
 					if (s[1].equals("nr")) {
 						par = s[5];
 						child.reply = true;
