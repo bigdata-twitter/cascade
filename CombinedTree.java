@@ -124,15 +124,14 @@ public class CombinedTree {
 	}
 
 	private static void printAllTrees(TrieNode n) {
-		if (n.c == null)
-			return;
-		if (n.c.parent == null) {
+		if (n.c != null && n.c.parent == null) {
 			printTree(n.c, dataset.contains(n.c.id));
 			System.out.println();
 			count++;
 		}
 		for (int i = 0; i < 10; i++)
-			printAllTrees(n.children[i]);
+			if (n.children[i] != null)
+				printAllTrees(n.children[i]);
 	}
 
 	private static void printTree(CombinedNode cur, boolean contained) {
