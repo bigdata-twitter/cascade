@@ -42,7 +42,9 @@ class Trie {
 			else
 				cur = cur.children[s.charAt(i) - 48];
 		}
-		return true;
+		if (cur.c != null)
+			return true;
+		return false;
 	}
 
 	CombinedNode getNode(String s, TrieNode n) {
