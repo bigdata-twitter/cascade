@@ -28,7 +28,9 @@ public class CombinedTree {
 		while ((f = br1.readLine()) != null) {
 			BufferedReader br = new BufferedReader(new FileReader(f));
 			String in;
+			long line = 0;
 			out: while ((in = br.readLine()) != null) {
+				line++;
 				String s[] = in.split("\t");
 				int c = 0;
 				long par = 0;
@@ -49,9 +51,15 @@ public class CombinedTree {
 					} else
 						par = Long.parseLong(s[2]);
 					break;
+				case 3:
+					child = new CombinedNode(chi);
+					par = Long.parseLong(s[2]);
+					child.reply = true;
 				default:
 					System.err.println("Error!!");
-					System.exit(1);
+					System.err.println("File: " + f);
+					System.err.println("Line number: " + line);
+					System.err.println("Line: " + in);
 					break;
 				}
 				CombinedNode parent = null;
