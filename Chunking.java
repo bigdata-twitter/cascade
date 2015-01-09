@@ -61,12 +61,13 @@ public class Chunking {
 					String kids;
 					while ((kids = bacche.readLine()) != null) {
 						s = kids.split("\t");
-						for (int j = 1; j < s.length; j++)
-							if (s[j].equals(par))
-								toWrite = toWrite.concat("," + s[0]);
+						if (s[2].equals(par))
+							toWrite = toWrite.concat(", rt\t" + s[0]);
+						if (s.length > 5 && s[5].equals(par))
+							toWrite = toWrite.concat(", rp\t" + s[0]);
 					}
 					bacche.close();
-					bw.write(toWrite);
+					bw.write(toWrite + "\n");
 				}
 			}
 			br.close();
@@ -124,8 +125,10 @@ public class Chunking {
 					System.out.println("Error!");
 				}
 				for (int i = id.length - 1; i >= 0; i--)
-					if (par >= id[i])
-						bw[i].write(in);
+					if (par >= id[i]) {
+						bw[i].write(in + "\n");
+						break;
+					}
 			}
 			br.close();
 			System.out.println("Done chunking from file " + f);
