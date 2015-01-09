@@ -31,7 +31,10 @@ public class Chunking {
 			BufferedReader br = new BufferedReader(new FileReader("chunk_" + i));
 			BufferedWriter bw = new BufferedWriter(new FileWriter("child_list_"
 					+ i));
-			HashSet<String> encountered = new HashSet<String>();
+			HashSet<String> encountered = new HashSet<String>(); // parent ids
+																	// that have
+																	// already
+																	// been seen
 			String in;
 			while ((in = br.readLine()) != null) {
 				String s[] = in.split("\t");
@@ -40,7 +43,7 @@ public class Chunking {
 				for (int j = 0; j < s.length; j++)
 					if (!s[j].isEmpty() && Character.isDigit(s[j].charAt(0)))
 						c++;
-				switch (c) {
+				switch (c) { // extract the parent tweet id
 				case 2:
 					if (s[1].equals("nr"))
 						par = s[5];
@@ -51,19 +54,23 @@ public class Chunking {
 					par = s[2];
 					break;
 				}
-				if (encountered.contains(par))
+				if (encountered.contains(par)) // already seen? we must have
+												// built the childlist
+												// previously, can easily
+												// discard this time.
 					continue;
 				else {
-					encountered.add(par);
+					encountered.add(par); // add to the seen list
 					String toWrite = par;
 					BufferedReader bacche = new BufferedReader(new FileReader(
 							"chunk_" + i));
 					String kids;
 					while ((kids = bacche.readLine()) != null) {
+						// find all children of current parent id
 						s = kids.split("\t");
-						if (s[2].equals(par))
+						if (s[2].equals(par)) // retweet
 							toWrite = toWrite.concat(", rt\t" + s[0]);
-						if (s.length > 5 && s[5].equals(par))
+						if (s.length > 5 && s[5].equals(par)) // reply
 							toWrite = toWrite.concat(", rp\t" + s[0]);
 					}
 					bacche.close();
@@ -78,10 +85,13 @@ public class Chunking {
 	}
 
 	private static void makeChunks() throws IOException {
-		BufferedReader br1 = new BufferedReader(new FileReader("files"));
+		BufferedReader br1 = new BufferedReader(new FileReader("files")); // list
+																			// of
+																			// files
 		BufferedWriter bw[] = new BufferedWriter[id.length];
 		for (int i = 0; i < bw.length; i++)
-			bw[i] = new BufferedWriter(new FileWriter("chunk_" + i));
+			bw[i] = new BufferedWriter(new FileWriter("chunk_" + i)); // /chunk
+																		// files
 		String f;
 		while ((f = br1.readLine()) != null) {
 			BufferedReader br = new BufferedReader(new FileReader(f));
@@ -92,19 +102,20 @@ public class Chunking {
 				long par = 0;
 				for (int i = 0; i < s.length; i++)
 					if (!s[i].isEmpty() && Character.isDigit(s[i].charAt(0)))
-						c++;
+						c++; // counter for the number of times a number occurs
+								// in the line
 				switch (c) {
 				case 1:
-					continue out;
+					continue out; // independent, no tree formed
 				case 2:
-					if (s[1].equals("nr")) {
+					if (s[1].equals("nr")) { // reply
 						try {
 							par = Long.parseLong(s[5]);
 						} catch (NumberFormatException n) {
 							bw[bw.length - 1].write(in);
 							continue out;
 						}
-					} else {
+					} else { // retweet
 						try {
 							par = Long.parseLong(s[2]);
 						} catch (NumberFormatException n) {
@@ -114,7 +125,8 @@ public class Chunking {
 					}
 					break;
 				case 3:
-					try {
+					try { // retweet of a reply - take it as a retweet only
+							// since reply will be independently considered
 						par = Long.parseLong(s[2]);
 					} catch (NumberFormatException n) {
 						bw[bw.length - 1].write(in);
@@ -125,7 +137,7 @@ public class Chunking {
 					System.out.println("Error!");
 				}
 				for (int i = id.length - 1; i >= 0; i--)
-					if (par >= id[i]) {
+					if (par >= id[i]) { // write line in appropriate file
 						bw[i].write(in + "\n");
 						break;
 					}
