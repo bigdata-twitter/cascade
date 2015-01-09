@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -22,6 +24,8 @@ class CombinedNode {
 public class CombinedTree {
 	public static void main(String args[]) throws IOException {
 		BufferedReader br1 = new BufferedReader(new FileReader("files"));
+		BufferedWriter bw = new BufferedWriter(new FileWriter("large"));
+		BufferedWriter bw1 = new BufferedWriter(new FileWriter("rep-and-rt"));
 		String f;
 		Hashtable<Long, CombinedNode> h = new Hashtable<Long, CombinedNode>();
 		HashSet<Long> dataset = new HashSet<Long>();
@@ -33,8 +37,13 @@ public class CombinedTree {
 				line++;
 				String s[] = in.split("\t");
 				int c = 0;
-				long par = 0;
-				long chi = Long.parseLong(s[0]);
+				long par = 0, chi;
+				try {
+					chi = Long.parseLong(s[0]);
+				} catch (NumberFormatException n) {
+					bw.write(in);
+					continue out;
+				}
 				CombinedNode child = null;
 				dataset.add(chi);
 				for (int i = 0; i < s.length; i++)
@@ -46,20 +55,30 @@ public class CombinedTree {
 				case 2:
 					child = new CombinedNode(chi);
 					if (s[1].equals("nr")) {
-						par = Long.parseLong(s[5]);
+						try {
+							par = Long.parseLong(s[5]);
+						} catch (NumberFormatException n) {
+							bw.write(in);
+							continue out;
+						}
 						child.reply = true;
 					} else
-						par = Long.parseLong(s[2]);
+						try {
+							par = Long.parseLong(s[2]);
+						} catch (NumberFormatException n) {
+							bw.write(in);
+							continue out;
+						}
 					break;
 				case 3:
 					child = new CombinedNode(chi);
-					par = Long.parseLong(s[2]);
+					par = Long.parseLong(s[4]);
 					child.reply = true;
 				default:
-					System.err.println("Error!!");
-					System.err.println("File: " + f);
-					System.err.println("Line number: " + line);
-					System.err.println("Line: " + in);
+					bw1.write("Error!!\n");
+					bw1.write("File: " + f + "\n");
+					bw1.write("Line number: " + line + "\n");
+					bw1.write("Line: " + in + "\n");
 					break;
 				}
 				CombinedNode parent = null;
@@ -77,6 +96,8 @@ public class CombinedTree {
 			System.err.println("Done making tree from file " + f);
 		}
 		br1.close();
+		bw.close();
+		bw1.close();
 		System.err.println("Done making trees from all");
 		Enumeration<CombinedNode> e = h.elements();
 		int count = 0;
