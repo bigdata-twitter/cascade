@@ -42,7 +42,12 @@ public class Independents {
 								// in the line
 				switch (c) {
 				case 1:
-					par = Long.parseLong(s[0]);
+					try {
+						par = Long.parseLong(s[0]);
+					} catch (NumberFormatException n) {
+						bw[bw.length - 1].write(s[0] + "\n");
+						continue out;
+					}
 					break;
 				default:
 					continue out;
