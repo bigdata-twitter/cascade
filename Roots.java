@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
 public class Roots {
@@ -18,7 +19,7 @@ public class Roots {
 		}
 		Long[] roots = list.toArray(new Long[list.size()]);
 		System.out.println("Beginning sorting");
-		Arrays.sort(roots);
+		Arrays.sort(roots, Collections.reverseOrder());
 		System.out.println("Sorting finished");
 		BufferedWriter bw = new BufferedWriter(new FileWriter("roots_all"));
 		for (int i = 0; i < roots.length; i++)
