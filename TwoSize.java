@@ -75,7 +75,8 @@ public class TwoSize {
 					if (!parents.containsKey(child.id)) {
 						TreeNode tn = new TreeNode(cur_root, false);
 						tn.children.add(new TreeNode(child.id, child.reply));
-						printTree(tn, true);
+						printTree(tn, true, trees);
+						trees.write("\n");
 						parents.remove(cur_root);
 					}
 				} else
@@ -88,20 +89,21 @@ public class TwoSize {
 		trees.close();
 	}
 
-	private static void printTree(TreeNode tn, boolean contained) {
-		System.out.print("{\"id\":" + tn.id + ", \"contained\":" + contained
+	private static void printTree(TreeNode tn, boolean contained,
+			BufferedWriter bw) throws IOException {
+		bw.write("{\"id\":" + tn.id + ", \"contained\":" + contained
 				+ ", \"reply\":" + tn.reply + ", \"children\":[");
 		if (!tn.children.isEmpty()) {
 			for (int i = 0; i < tn.children.size(); i++) {
 				if (i == 0)
-					printTree(tn.children.getFirst(), contained);
+					printTree(tn.children.getFirst(), contained, bw);
 				else {
 					System.out.print(",");
-					printTree(tn.children.get(i), contained);
+					printTree(tn.children.get(i), contained, bw);
 				}
 			}
 		}
-		System.out.print("]}");
+		bw.write("]}");
 	}
 
 	private static void loadData(int i) throws IOException {
