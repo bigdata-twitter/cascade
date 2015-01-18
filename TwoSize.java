@@ -7,6 +7,16 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+class Child {
+	boolean reply;
+	long id;
+
+	Child(boolean reply, long id) {
+		this.reply = reply;
+		this.id = id;
+	}
+}
+
 class TreeNode {
 	LinkedList<TreeNode> children;
 	CombinedNode parent;
