@@ -63,7 +63,7 @@ public class TwoSize {
 		Iterator<Long> iter = roots.iterator();
 		while (iter.hasNext()) {
 			long cur_root = iter.next();
-			for (int i = id.length; i >= 0; i--)
+			for (int i = id.length - 1; i >= 0; i--)
 				if (cur_root >= id[i]) {
 					to_load = i;
 					break;
@@ -80,7 +80,8 @@ public class TwoSize {
 				if (children.size() != 1)
 					continue;
 				Child child = children.getFirst();
-				if (child.id < id[cur_loaded + MAX_LOAD]) {
+				if (child.id < id[cur_loaded + MAX_LOAD > id.length ? id.length
+						: cur_loaded + MAX_LOAD]) {
 					if (!parents.containsKey(child.id)) {
 						TreeNode tn = new TreeNode(cur_root, false);
 						tn.children.add(new TreeNode(child.id, child.reply));
@@ -107,7 +108,7 @@ public class TwoSize {
 				if (i == 0)
 					printTree(tn.children.getFirst(), contained, bw);
 				else {
-					bw.write(",");
+					System.out.print(",");
 					printTree(tn.children.get(i), contained, bw);
 				}
 			}
