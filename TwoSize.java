@@ -7,7 +7,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-
 class TreeNode {
 	LinkedList<TreeNode> children;
 	CombinedNode parent;
@@ -77,10 +76,11 @@ public class TwoSize {
 						TreeNode tn = new TreeNode(cur_root, false);
 						tn.children.add(new TreeNode(child.id, child.reply));
 						printTree(tn, true);
+						parents.remove(cur_root);
 					}
 				} else
 					oor.write(cur_root + ", " + (child.reply ? "rp\t" : "rt\t")
-							+ child.id);
+							+ child.id + "\n");
 			}
 		}
 		left.close();
@@ -127,9 +127,14 @@ public class TwoSize {
 	private static void removeData(int loaded) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("child_list_"
 				+ loaded));
+		BufferedWriter left = new BufferedWriter(new FileWriter("left_"
+				+ loaded));
 		String in;
-		while ((in = br.readLine()) != null)
+		while ((in = br.readLine()) != null) {
 			parents.remove(Long.parseLong(in.split(", ")[0]));
+			left.write(in + "\n");
+		}
+		left.close();
 		br.close();
 	}
 }
