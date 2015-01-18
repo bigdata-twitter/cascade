@@ -107,7 +107,7 @@ public class TwoSize {
 				if (i == 0)
 					printTree(tn.children.getFirst(), contained, bw);
 				else {
-					System.out.print(",");
+					bw.write(",");
 					printTree(tn.children.get(i), contained, bw);
 				}
 			}
