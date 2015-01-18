@@ -19,7 +19,6 @@ class Child {
 
 class TreeNode {
 	LinkedList<TreeNode> children;
-	CombinedNode parent;
 	long id;
 	boolean reply;
 
