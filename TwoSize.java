@@ -7,6 +7,20 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+
+class TreeNode {
+	LinkedList<TreeNode> children;
+	CombinedNode parent;
+	long id;
+	boolean reply;
+
+	TreeNode(long id, boolean reply) {
+		this.id = id;
+		this.children = new LinkedList<TreeNode>();
+		this.reply = reply;
+	}
+}
+
 public class TwoSize {
 	static final long id[] = { 0l, 42500000000000000l, 85000000000000000l,
 			170000000000000000l, 232500000000000000l, 265000000000000000l,
@@ -22,15 +36,17 @@ public class TwoSize {
 			455250000000000000l, 456000000000000000l, 457300000000000000l,
 			458700000000000000l, 459300000000000000l, 460000000000000000l,
 			461000000000000000l, 5000000000000000000l };
-	static Hashtable<Long, LinkedList<Long>> h;
+	static Hashtable<Long, LinkedList<Child>> parents;
 	final static int MAX_LOAD = 8;
 
 	public static void main(String args[]) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("roots_all"));
-		BufferedWriter bw = new BufferedWriter(new FileWriter("leftover_roots"));
-		
+		BufferedWriter left = new BufferedWriter(new FileWriter(
+				"leftover_roots"));
+		BufferedWriter oor = new BufferedWriter(new FileWriter("out_of_range"));
+		BufferedWriter trees = new BufferedWriter(new FileWriter("trees"));
 		LinkedList<Long> roots = new LinkedList<Long>();
-		h = new Hashtable<Long, LinkedList<Long>>();
+		parents = new Hashtable<Long, LinkedList<Child>>();
 		String in;
 		while ((in = br.readLine()) != null)
 			roots.add(Long.parseLong(in));
@@ -40,29 +56,80 @@ public class TwoSize {
 		while (iter.hasNext()) {
 			long cur_root = iter.next();
 			for (int i = id.length; i >= 0; i--)
-				if (cur_root >= id[i])
+				if (cur_root >= id[i]) {
 					to_load = i;
+					break;
+				}
 			while (cur_loaded >= to_load) {
 				if (cur_load == MAX_LOAD)
 					removeData(cur_loaded + MAX_LOAD - 1);
 				loadData(--cur_loaded);
 			}
-			if (!h.containsKey(cur_root))
-				bw.write(cur_root + "\n");
+			if (!parents.containsKey(cur_root))
+				left.write(cur_root + "\n");
 			else {
-				
+				LinkedList<Child> children = parents.get(cur_root);
+				if (children.size() != 1)
+					continue;
+				Child child = children.getFirst();
+				if (child.id < id[cur_loaded + MAX_LOAD]) {
+					if (!parents.containsKey(child.id)) {
+						TreeNode tn = new TreeNode(cur_root, false);
+						tn.children.add(new TreeNode(child.id, child.reply));
+						printTree(tn, true);
+					}
+				} else
+					oor.write(cur_root + ", " + (child.reply ? "rp\t" : "rt\t")
+							+ child.id);
 			}
 		}
-		bw.close();
+		left.close();
+		oor.close();
+		trees.close();
 	}
 
-	private static void loadData(int i) {
-		// TODO Auto-generated method stub
-
+	private static void printTree(TreeNode tn, boolean contained) {
+		System.out.print("{\"id\":" + tn.id + ", \"contained\":" + contained
+				+ ", \"reply\":" + tn.reply + ", \"children\":[");
+		if (!tn.children.isEmpty()) {
+			for (int i = 0; i < tn.children.size(); i++) {
+				if (i == 0)
+					printTree(tn.children.getFirst(), contained);
+				else {
+					System.out.print(",");
+					printTree(tn.children.get(i), contained);
+				}
+			}
+		}
+		System.out.print("]}");
 	}
 
-	private static void removeData(int loaded) {
-		// TODO Auto-generated method stub
+	private static void loadData(int i) throws IOException {
+		BufferedReader br = new BufferedReader(
+				new FileReader("child_list_" + i));
+		String in;
+		while ((in = br.readLine()) != null) {
+			String[] cur = in.split(", ");
+			LinkedList<Child> list = new LinkedList<Child>();
+			for (int j = 1; j < cur.length; j++) {
+				if (cur[j].split("\t")[0].equals("rp"))
+					list.add(new Child(true,
+							Long.parseLong(cur[j].split("\t")[0])));
+				else
+					list.add(new Child(false,
+							Long.parseLong(cur[j].split("\t")[0])));
+			}
+			parents.put(Long.parseLong(cur[0]), list);
+		}
+		br.close();
+	}
 
+	private static void removeData(int loaded) throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("child_list_"
+				+ loaded));
+		String in;
+		while ((in = br.readLine()) != null)
+			parents.remove(Long.parseLong(in.split(", ")[0]));
+		br.close();
 	}
 }
