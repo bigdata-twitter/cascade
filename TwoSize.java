@@ -80,7 +80,7 @@ public class TwoSize {
 				if (children.size() != 1)
 					continue;
 				Child child = children.getFirst();
-				if (child.id < id[cur_loaded + MAX_LOAD > id.length ? id.length
+				if (child.id < id[cur_loaded + MAX_LOAD >= id.length ? id.length - 1
 						: cur_loaded + MAX_LOAD]) {
 					if (!parents.containsKey(child.id)) {
 						TreeNode tn = new TreeNode(cur_root, false);
@@ -126,10 +126,10 @@ public class TwoSize {
 			for (int j = 1; j < cur.length; j++) {
 				if (cur[j].split("\t")[0].equals("rp"))
 					list.add(new Child(true,
-							Long.parseLong(cur[j].split("\t")[0])));
+							Long.parseLong(cur[j].split("\t")[1])));
 				else
 					list.add(new Child(false,
-							Long.parseLong(cur[j].split("\t")[0])));
+							Long.parseLong(cur[j].split("\t")[1])));
 			}
 			parents.put(Long.parseLong(cur[0]), list);
 		}
