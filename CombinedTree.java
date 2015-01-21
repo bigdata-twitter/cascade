@@ -72,8 +72,13 @@ public class CombinedTree {
 					break;
 				case 3:
 					child = new CombinedNode(chi);
-					par = Long.parseLong(s[4]);
-					child.reply = true;
+					try {
+						par = Long.parseLong(s[2]);
+					} catch (NumberFormatException n) {
+						bw.write(in);
+						continue out;
+					}
+					break;
 				default:
 					bw1.write("Error!!\n");
 					bw1.write("File: " + f + "\n");
@@ -93,6 +98,7 @@ public class CombinedTree {
 				h.put(chi, child);
 			}
 			br.close();
+			System.gc();
 			System.err.println("Done making tree from file " + f);
 		}
 		br1.close();

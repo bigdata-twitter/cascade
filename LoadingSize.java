@@ -1,9 +1,9 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
 
 class Child {
 	boolean reply;
@@ -34,27 +34,21 @@ public class LoadingSize {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("trees"));
 		HashSet<Long> roots_done = new HashSet<Long>();
-		Hashtable<Long, LinkedList<Child>> children = new Hashtable<Long, LinkedList<Child>>();
 		String in;
 		while ((in = br.readLine()) != null)
 			roots_done.add(Long.parseLong(in.split(":")[1].split(",")[0]));
 		br.close();
 		for (int i = 0; i < id.length; i++) {
 			br = new BufferedReader(new FileReader("child_list_" + i));
+			BufferedWriter bw = new BufferedWriter(new FileWriter("left_" + i));
 			while ((in = br.readLine()) != null) {
 				String[] cur = in.split(", ");
-				LinkedList<Child> chi = new LinkedList<Child>();
-				for (int j = 1; j < cur.length; j++) {
-					if (cur[j].split("\t")[0].equals("rp"))
-						chi.add(new Child(true, Long.parseLong(cur[j]
-								.split("\t")[1])));
-					else
-						chi.add(new Child(false, Long.parseLong(cur[j]
-								.split("\t")[1])));
-				}
-				children.put(Long.parseLong(cur[0]), chi);
+				if (roots_done.contains(Long.parseLong(cur[0])))
+					continue;
+				bw.write(in + "\n");
 			}
 			br.close();
+			bw.close();
 			System.out.println("Done with child_list_" + i);
 		}
 		System.out.println("Done with all");
