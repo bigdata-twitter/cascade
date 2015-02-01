@@ -1,5 +1,9 @@
 #include <iostream>
-#include <forward_list>
+#include <sstream>
+#include <map>
+#include <set>
+#include <fstream>
+#include <list>
 #include <iterator>
 #include <cctype>
 #include <string>
@@ -8,12 +12,12 @@ using namespace std;
 
 class CombinedNode {
 	public: 
-		forward_list<CombinedNode> children;
+		list<CombinedNode> children;
 		bool parent;
 		long id;
 		bool reply;
 
-		CombinedNode(long l) {
+		CombinedNode(long l=0) {
 			id = l;
 			reply = false;
 			parent = false;
