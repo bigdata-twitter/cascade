@@ -14,12 +14,18 @@ using namespace std;
 
 class CombinedNode {
 	public: 
-		list<CombinedNode> children;
+		list<CombinedNode*> children;
 		bool parent;
 		long id;
 		bool reply;
 
-		CombinedNode(long l=0) {
+		CombinedNode() {
+			id = 0;
+			reply = false;
+			parent = false;
+		}
+
+		CombinedNode(long l) {
 			id = l;
 			reply = false;
 			parent = false;
@@ -35,16 +41,18 @@ vector<string> split(string in, char split) {
     return array;
 }
 
-void printTree(CombinedNode cur, bool contained) {
-	cout << "{\"id\":" << cur.id << ", \"contained\":" << contained << ", \"reply\":" << cur.reply << ", \"children\":[";
-	if (!cur.children.empty()) {
-		for (int i = 0, auto it = cur.children.begin(); it != cur.children.end(); i++, it++) {
+void printTree(CombinedNode* cur, bool contained) {
+	cout << "{\"id\":" << cur->id << ", \"contained\":" << contained << ", \"reply\":" << cur->reply << ", \"children\":[";
+	if (!cur->children.empty()) {
+		int i = 0;
+		for (auto it = cur->children.begin(); it != cur->children.end(); it++) {
 			if (i == 0)
 				printTree(*it, contained);
 			else {
 				cout << ",";
 				printTree(*it, contained);
 			}
+			i++;
 		}
 	}
 	cout << "]}";
@@ -55,7 +63,7 @@ int main() {
 	ofstream large("large");
 	string f;
 	int line = 0;
-	map<long, CombinedNode> m;
+	map<long, CombinedNode*> m;
 	set<long> dataset;
 	while (getline(files, f)) {
 		ifstream br(f.c_str());
@@ -71,7 +79,7 @@ int main() {
     			large << in << endl;
     			goto out;
     		}
-    		CombinedNode child;
+    		CombinedNode *child;
 			dataset.insert(chi);
 			for (int i = 0; i < s.size(); i++)
 				if (!s[i].empty() && isdigit(s[i][0]))
@@ -88,7 +96,7 @@ int main() {
 						large << in << endl;
 						goto out;
 					}
-					child.reply = true;
+					child->reply = true;
 				} else
 					try {
 						par = stoll(s[2]);
@@ -109,15 +117,15 @@ int main() {
 			default:
 				cerr << "Error!!\nFile: " << f << "\nLine number: " << line << "\nLine: " << in << endl;
 			}
-			CombinedNode parent;
+			CombinedNode *parent;
 			if (m.count(par) != 0)
 				parent = m.at(par);
 			else {
 				parent = new CombinedNode(par);
 				m[par] = parent;
 			}
-			parent.children.push_front(child);
-			child.parent = true;
+			parent->children.push_front(child);
+			child->parent = true;
 			m[chi] = child;
 		}
 		br.close();
@@ -127,11 +135,11 @@ int main() {
 	large.close();
 	cerr << "Done making trees from all" << endl;
 	int count = 0;
-	for (map<long, CombinedNode>::iterator it=mymap.begin(); it!=mymap.end(); ++it) {
-		CombinedNode cur = it->second;
-		if (cur.parent == false) {
-			count++;i
-			printTree(cur, dataset.count(cur.id)!=0);
+	for (map<long, CombinedNode*>::iterator it=m.begin(); it!=m.end(); ++it) {
+		CombinedNode* cur = it->second;
+		if (cur->parent == false) {
+			count++;
+			printTree(cur, dataset.count(cur->id)!=0);
 			cout << endl;
 		}
 	}
