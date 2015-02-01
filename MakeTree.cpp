@@ -6,8 +6,10 @@
 #include <list>
 #include <iterator>
 #include <cctype>
+#include <cstdlib>
 #include <string>
 #include <vector>
+#include <stdexcept>
 using namespace std;
 
 class CombinedNode {
@@ -33,6 +35,21 @@ vector<string> split(string in, char split) {
     return array;
 }
 
+void printTree(CombinedNode cur, bool contained) {
+	cout << "{\"id\":" << cur.id << ", \"contained\":" << contained << ", \"reply\":" << cur.reply << ", \"children\":[";
+	if (!cur.children.empty()) {
+		for (int i = 0, auto it = cur.children.begin(); it != cur.children.end(); i++, it++) {
+			if (i == 0)
+				printTree(*it, contained);
+			else {
+				cout << ",";
+				printTree(*it, contained);
+			}
+		}
+	}
+	cout << "]}";
+}
+
 int main() {
 	ifstream files("files");
 	ofstream large("large");
@@ -41,7 +58,7 @@ int main() {
 	map<long, CombinedNode> m;
 	set<long> dataset;
 	while (getline(files, f)) {
-		ifstream br(f);
+		ifstream br(f.c_str());
 		string in;
 		out: while (getline(br, in)) {
 			line++;
@@ -52,7 +69,7 @@ int main() {
 				chi = stoll(s[0]);
 			} catch (const out_of_range& oor) {
     			large << in << endl;
-    			continue out;
+    			goto out;
     		}
     		CombinedNode child;
 			dataset.insert(chi);
@@ -61,7 +78,7 @@ int main() {
 					c++;
 			switch (c) {
 			case 1:
-				continue out;
+				goto out;
 			case 2:
 				child = new CombinedNode(chi);
 				if (s[1].compare("nr") == 0) {
@@ -69,7 +86,7 @@ int main() {
 						par = stoll(s[5]);
 					} catch (const out_of_range& oor) {
 						large << in << endl;
-						continue out;
+						goto out;
 					}
 					child.reply = true;
 				} else
@@ -77,7 +94,7 @@ int main() {
 						par = stoll(s[2]);
 					} catch (const out_of_range& oor) {
 						large << in << endl;
-						continue out;
+						goto out;
 					}
 				break;
 			case 3:
@@ -86,7 +103,7 @@ int main() {
 					par = stoll(s[5]);
 				} catch (const out_of_range& oor) {
 					large << in << endl;
-					continue out;
+					goto out;
 				}
 				break;
 			default:
@@ -113,25 +130,10 @@ int main() {
 	for (map<long, CombinedNode>::iterator it=mymap.begin(); it!=mymap.end(); ++it) {
 		CombinedNode cur = it->second;
 		if (cur.parent == false) {
-			count++;
-			printTree(cur, dataset.contains(cur.id));
+			count++;i
+			printTree(cur, dataset.count(cur.id)!=0);
 			cout << endl;
 		}
 	}
 	cerr << "Total cascades = " << count << endl;
-}
-
-void printTree(CombinedNode cur, bool contained) {
-	cout << "{\"id\":" << cur.id << ", \"contained\":" << contained << ", \"reply\":" << cur.reply << ", \"children\":[";
-	if (!cur.children.empty()) {
-		for (int i = 0, auto it = cur.children.begin(); it != cur.children.end(); i++, it++) {
-			if (i == 0)
-				printTree(*it, contained);
-			else {
-				cout << ",";
-				printTree(*it, contained);
-			}
-		}
-	}
-	cout << "]}";
 }
