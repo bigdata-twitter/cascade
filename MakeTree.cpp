@@ -37,8 +37,8 @@ vector<string> split(string in, char split) {
 	istringstream ss(in);
 	string token;
 	while(getline(ss, token, split))
-    	array.push_back(token);
-    return array;
+	    	array.push_back(token);
+	return array;
 }
 
 void printTree(CombinedNode* cur, bool contained) {
@@ -62,12 +62,12 @@ int main() {
 	ifstream files("files");
 	ofstream large("large");
 	string f;
-	int line = 0;
 	map<long, CombinedNode*> m;
 	set<long> dataset;
 	while (getline(files, f)) {
 		ifstream br(f.c_str());
 		string in;
+		int line = 0;
 		out: while (getline(br, in)) {
 			line++;
 			vector<string> s = split(in, '\t');
@@ -76,10 +76,10 @@ int main() {
 			try {
 				chi = stoll(s[0]);
 			} catch (const out_of_range& oor) {
-    			large << in << endl;
-    			goto out;
-    		}
-    		CombinedNode *child;
+    				large << in << endl;
+    				goto out;
+    			}
+    			CombinedNode *child;
 			dataset.insert(chi);
 			for (int i = 0; i < s.size(); i++)
 				if (!s[i].empty() && isdigit(s[i][0]))
@@ -108,7 +108,7 @@ int main() {
 			case 3:
 				child = new CombinedNode(chi);
 				try {
-					par = stoll(s[5]);
+					par = stoll(s[2]);
 				} catch (const out_of_range& oor) {
 					large << in << endl;
 					goto out;
