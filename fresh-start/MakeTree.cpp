@@ -114,7 +114,7 @@ int main() {
 		CombinedNode* cur = it->second;
 		if (cur->parent == false) {
 			count++;
-			if (count%100 == 0)
+			if (count%10000 == 0)
 				cerr << count << " cascades found" << endl;
 			printTree(cur);
 			cout << endl;
