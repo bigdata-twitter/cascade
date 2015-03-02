@@ -90,9 +90,9 @@ public class ChunkedChildren {
 				while (iter.hasNext()) {
 					Child cur = iter.next();
 					if (cur.reply)
-						toWrite = toWrite.concat(",rp\t" + cur.id);
+						toWrite = toWrite.concat(", rp\t" + cur.id);
 					else
-						toWrite = toWrite.concat(",rt\t" + cur.id);
+						toWrite = toWrite.concat(", rt\t" + cur.id);
 				}
 				bw.write(toWrite + '\n');
 			}
