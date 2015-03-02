@@ -21,7 +21,7 @@ Step 3 ->	g++ -std=c++11 MakeTree.cpp -o tree.out
 			
 Step 4 ->	ls child_list* > files
 			delete the lines corresponding to the files that are not needed
-			./tree.out 1> tree1.json 2> err1.json &
+			./tree.out 1> tree1.json 2> err1.txt &
 
 Repeat step 4 for all the combinations of child_list that are of interest ie 0-9, 10-19, 20-29, 30-40
 
