@@ -19,7 +19,6 @@ for line in f:
 				max_depth = current[1]
 		for child in current[0]['children']:
 			to_visit.append((child, current[1] + 1))
-	print max_depth
 	if max_depth not in height_dic:
 		height_dic[max_depth]=1
 	else: 
