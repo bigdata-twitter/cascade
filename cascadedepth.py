@@ -22,7 +22,7 @@ for line in f:
 	if max_depth not in height_dic:
 		height_dic[max_depth]=1
 	else: 
-		height_dic[max_depth]=+height_dic[max_depth]+1
+		height_dic[max_depth]=height_dic[max_depth]+1
 f1=open("cascasde_depth.txt","w")
 for k in sorted(height_dic.keys()):
 	f1.write(str(k)+"\t"+str(height_dic[k])+"\n")
