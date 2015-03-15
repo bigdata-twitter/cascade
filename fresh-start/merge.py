@@ -37,6 +37,7 @@ for line in g:
 	h.write('\n')
 	count += 1
 #print count
+g.close()
 
 for key, value in dict.iteritems():
 	f.seek(value)
@@ -45,4 +46,6 @@ for key, value in dict.iteritems():
 	json.dump(tree, h)
 	h.write('\n')
 	count += 1
-#print count
+print count
+f.close()
+h.close()
