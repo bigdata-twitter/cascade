@@ -58,7 +58,7 @@ int main() {
 	ifstream files("files");
 	ofstream large("large");
 	string f;
-	map<long, CombinedNode*> m;
+	map<long long, CombinedNode*> m;
 	while (getline(files, f)) {
 		ifstream br(f.c_str());
 		string in;
